@@ -5,3 +5,8 @@ Data visualisation with Dash
 ```
 conda env create -f environment.yml
 ```
+
+## Make data
+```
+python prepare_karate_data.py
+```
