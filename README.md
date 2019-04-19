@@ -1,12 +1,18 @@
 # dash-visualisation
 Data visualisation with Dash
 
-## Environment setup
+## Quickstart 
+Setup environment
 ```
 conda env create -f environment.yml
 ```
 
-## Make data
+Make dataset
 ```
-python prepare_karate_data.py
+python prepare_example_data.py
+```
+
+Launch Dash app!
+```
+python app.py
 ```
