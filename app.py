@@ -5,12 +5,7 @@ import dash_cytoscape as cyto
 from dash.dependencies import Input, Output, State
 import json
 
-
-EDGE_COLOR = '#F2EFD7'
-NODE_COLOR_1 = '#19888E'
-NODE_COLOR_2 = '#19647E'
-EXTRA_COLOR_1 = '#583575'
-EXTRA_COLOR_2 = '#CB8618'
+import mycyto.style 
 
 
 def load_data():
@@ -36,37 +31,7 @@ graph_cyto = cyto.Cytoscape(
     layout={'name': 'cose'},  
     style={'width': '100%', 'height': '600px'},
     elements=default_elements,
-    stylesheet=[
-        # style for all nodes
-        {
-            'selector': 'node',
-            'style': {
-                'label': 'data(id)',
-            },
-        },
-        # style specific nodes
-        {
-            'selector': '[node_type *= "entity"]',
-            'style': {
-                'background-color': NODE_COLOR_1,
-            }
-        },
-        {
-            'selector': '[node_type != "entity"]',
-            'style': {
-                'background-color': NODE_COLOR_2, 
-            }
-        },
-        # style all edges
-        {
-            'selector': 'edge',
-            'style': {
-                'line-color': EDGE_COLOR,
-                'mid-target-arrow-shape': 'vee',
-                'mid-target-arrow-color': EDGE_COLOR
-            }
-        },
-    ]
+    stylesheet=mycyto.style.default_stylesheet,
 )
 
 app = dash.Dash(__name__)
@@ -140,6 +105,22 @@ def mouse_over_node(node):
     else:
         return "```\n" + json.dumps(node, indent=4, separators=(',',':')) + "\n```"
 
+
+@app.callback(
+    Output('cyto-graph', 'stylesheet'), [
+    Input('cyto-graph', 'mouseoverNodeData'),],
+)
+def mouse_over_node_color(node):
+    if node is None:
+        return mycyto.style.default_stylesheet
+    else:
+        hover_node = [{
+            'selector': '[id *= "{}"]'.format(node['id']),
+            'style': {
+                'background-color': mycyto.style.EXTRA_COLOR_1,
+            },
+        }]
+        return mycyto.style.default_stylesheet + hover_node
 
 if __name__ == '__main__':
         app.run_server(debug=True)
